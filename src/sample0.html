@@ -1,12 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        h1 {
+            color: turquoise;
+        }
+
+        my-custom-component h1 {
+            color: red;
+        }
+
+        .my-custom-color {
+            color: blue;
+        }
+    </style>
 </head>
 
 <body>
-    <script></script>
+    <p>
+        WebComponents Standards
+        - Custom Elements
+        - ShadowDOM
+        - HTML Templates
+    </p>
+
+    <h1>Custom Component</h1>
+    <my-custom-component></my-custom-component>
+    <my-custom-component></my-custom-component>
+
+    <script>
+        class MyCustomComponent extends HTMLElement {
+            constructor() {
+                super()
+
+                this.attachShadow({ mode: "open" })
+
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        h1 {
+                            color: green;
+                        }
+                    </style>
+                    <h1 class="my-custom-color">Hello, World</h1>
+                    <button>Change Message</button>
+                `
+
+                const h1 = this.shadowRoot.querySelector("h1")
+                const button = this.shadowRoot.querySelector("button")
+
+                button.addEventListener("click", function () {
+                    h1.textContent = 'Hello, Universe'
+                })
+            }
+        }
+
+        window.customElements.define("my-custom-component", MyCustomComponent)
+    </script>
 </body>
 
 </html>
