@@ -33,7 +33,7 @@ class InputField extends HTMLElement {
                 }
             </style>
             <div>
-                <label for="street1">${label}</label>
+                <label for="${name}">${label}</label>
                 <input type="text" id="${ name }" name="${ name }" ${ required ? "required": "" }>
             </div>
         `
@@ -42,10 +42,15 @@ class InputField extends HTMLElement {
         const self = this
 
         input.addEventListener("input", function(event) {
-            self.dispatchEvent(new CustomEvent("change", {
-                detail: {value: input.value},
+            const isValid = input.validity.valid
+
+            const myEvent = new CustomEvent("change", {
+                detail: { value: input.value, isValid, name },
                 bubbles: true
-            }))
+            })
+
+            console.log("dispatching input event");
+            self.dispatchEvent(myEvent)
         })
     }
 }
