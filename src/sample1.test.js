@@ -2,49 +2,33 @@ import { describe } from "./utils/testing/Suite.js"
 import { equal } from "./utils/testing/Assertions.js"
 
 import MyApp from "./sample1.js"
+import { RenderContext } from "./RenderContext.js";
 
 export default describe( "sample 1", function( { test } ) {
 
     test( "rendering of app", function() {
-        const component = new MyApp()
+        const context = RenderContext.render(MyApp)
 
-        document.body.innerHTML = ""
-        document.body.appendChild(component)
-
-        const h1 = document.querySelector("h1")
+        const h1 = context.$("h1")
         equal(h1.textContent, "The App")
     } )
 
     test("submit button enable/disabled based on valid form", function() {
-        const component = new MyApp()
-
-        document.body.innerHTML = ""
-        document.body.appendChild(component)
-
-        const button = component.querySelector("button")
+        const context = RenderContext.render(MyApp)
+        const button = context.$("standard-button")
 
         equal(button.disabled, true)
 
-        component.sendKey("input-field[name='street1']", "1 Main")
+        context.sendKey("input-field[name='street1']", "1 Main")
+        equal(button.disabled, true)
 
-        // const street1Input = component
-        //     .querySelector("input-field[name=street1]")
-        //     .shadowRoot.querySelector("input")
+        context.sendKey("input-field[name='city']", "Memphis")
+        equal(button.disabled, true)
 
-        // street1Input.value = "1 Main"
-        // street1Input.dispatchEvent(new InputEvent("input", {
-        //     bubbles: true
-        // }))
+        context.sendKey("input-field[name='state']", "TN")
+        equal(button.disabled, true)
 
-        const cityInput = component
-            .querySelector("input-field[name=city]")
-            .shadowRoot.querySelector("input")
-
-        cityInput.value = "Memphis"
-        cityInput.dispatchEvent(new InputEvent("input", {
-            bubbles: true
-        }))
-
+        context.sendKey("input-field[name='zip']", "36701")
         equal(button.disabled, false)
     })
 

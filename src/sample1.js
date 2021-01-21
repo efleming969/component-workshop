@@ -1,4 +1,5 @@
 import "./components/input-field.js"
+import "./components/standard-button.js"
 
 export default class MyApp extends HTMLElement {
 
@@ -9,10 +10,11 @@ export default class MyApp extends HTMLElement {
             <h1>The App</h1>
             <form>
                 <input-field label="Street" name="street1" required></input-field>
+                <input-field label="Street" name="street2"></input-field>
                 <input-field label="City" name="city" required></input-field>
-                <input-field label="State" name="state"></input-field>
-                <input-field label="Zip" name="zip"></input-field>
-                <button disabled>Submit</button>
+                <input-field label="State" name="state" required></input-field>
+                <input-field label="Zip" name="zip" required></input-field>
+                <standard-button label="Save" disabled></standard-button>
             </form>
         `
 
@@ -22,30 +24,21 @@ export default class MyApp extends HTMLElement {
             },
             city: {
                 value: "", valid: false
+            },
+            state: {
+                value: "", valid: false
+            },
+            zip: {
+                value: "", valid: false
             }
         }
 
-        this.button = this.querySelector("button")
+        this.button = this.querySelector("standard-button")
 
-        const self = this
-        self.addEventListener("change", function(event) {
-            self.populateField(event.detail)
-            self.checkValidity()
+        this.addEventListener("change", function(event) {
+            this.populateField(event.detail)
+            this.checkValidity()
         })
-
-        // const street1 = this.querySelector("input-field[name='street1']")
-
-        // street1.addEventListener("change", function(event) {
-        //     self.populateField("street1", event.detail)
-        //     self.checkValidity()
-        // })
-
-        // const city = this.querySelector("input-field[name='city']")
-
-        // city.addEventListener("change", function(event) {
-        //     self.populateField("city", event.detail)
-        //     self.checkValidity()
-        // })
     }
 
     populateField(field) {
@@ -54,7 +47,15 @@ export default class MyApp extends HTMLElement {
     }
 
     checkValidity() {
-        this.button.disabled = !this.formValues.street1.valid || !this.formValues.city.valid
+        this.button.disabled = false
+
+        for(let value of Object.values(this.formValues)) {
+            if (value.valid === false)
+            {
+                this.button.disabled = true
+                break;
+            }
+        }
     }
 }
 
